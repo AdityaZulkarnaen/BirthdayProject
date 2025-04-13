@@ -48,8 +48,8 @@ const CakePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-800 flex flex-col items-center justify-center text-white">
-      <div className="text-4xl font-bold mb-8">
-        Happy Birthday {name}!
+      <div className="text-4xl w-10/12 font-bold mb-8 text-center">
+        Happy 19th Birthday {name}!
       </div>
       
       <div className="mb-8">

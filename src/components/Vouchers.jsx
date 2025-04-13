@@ -63,7 +63,7 @@ const Vouchers = () => {
               <div className="text-xs mb-1">BIRTHDAY COUPON</div>
               <div className="text-xs mb-3">THIS COUPON IS VALID FOR:</div>
               <div className="text-xl font-bold mb-4 flex-grow">{voucher.title}</div>
-              <div className="text-xs">VALID UNTIL {voucher.validUntil}</div>
+              <div className="text-xs size-fit">VALID UNTIL {voucher.validUntil}</div>
               <div className="flex justify-end">
                 <div className="bg-gray-800 text-white px-3 py-1 rounded-lg text-xs font-mono">
                   CODE: {voucher.id}
