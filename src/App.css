@@ -1,0 +1,24 @@
+/* src/App.css */
+@keyframes flame {
+  0% { transform: scale(1.0) rotate(-2deg); }
+  50% { transform: scale(1.2) rotate(2deg); }
+  100% { transform: scale(1.0) rotate(-2deg); }
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.animate-flame {
+  animation: flame 1s infinite; /* Slower flame animation */
+}
+
+.animate-progress {
+  animation: progress 45s linear forwards; /* Longer progress bar animation to match slower song */
+}
+
+.size-96 {
+  width: 24rem;
+  height: 24rem;
+}
