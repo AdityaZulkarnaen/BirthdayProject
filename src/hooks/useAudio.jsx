@@ -58,6 +58,106 @@ export function useAudio() {
     { note: 'G4', duration: 1 },
     // you
     { note: 'F4', duration: 2 },
+
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'D4', duration: 1 },
+    // day
+    { note: 'C4', duration: 1 },
+    // to
+    { note: 'F4', duration: 1 },
+    // you
+    { note: 'E4', duration: 2 },
+    
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'D4', duration: 1 },
+    // day
+    { note: 'C4', duration: 1 },
+    // to
+    { note: 'G4', duration: 1 },
+    // you
+    { note: 'F4', duration: 2 },
+    
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'C5', duration: 1 },
+    // day
+    { note: 'A4', duration: 1 },
+    // dear
+    { note: 'F4', duration: 0.5 },
+    { note: 'F4', duration: 0.5 },
+    // [Name]
+    { note: 'E4', duration: 1 },
+    { note: 'D4', duration: 1 },
+    
+    // Happy
+    { note: 'Bb4', duration: 0.5 },
+    { note: 'Bb4', duration: 0.5 },
+    // Birth-
+    { note: 'A4', duration: 1 },
+    // day
+    { note: 'F4', duration: 1 },
+    // to
+    { note: 'G4', duration: 1 },
+    // you
+    { note: 'F4', duration: 2 },
+
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'D4', duration: 1 },
+    // day
+    { note: 'C4', duration: 1 },
+    // to
+    { note: 'F4', duration: 1 },
+    // you
+    { note: 'E4', duration: 2 },
+    
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'D4', duration: 1 },
+    // day
+    { note: 'C4', duration: 1 },
+    // to
+    { note: 'G4', duration: 1 },
+    // you
+    { note: 'F4', duration: 2 },
+    
+    // Happy
+    { note: 'C4', duration: 0.5 },
+    { note: 'C4', duration: 0.5 },
+    // Birth-
+    { note: 'C5', duration: 1 },
+    // day
+    { note: 'A4', duration: 1 },
+    // dear
+    { note: 'F4', duration: 0.5 },
+    { note: 'F4', duration: 0.5 },
+    // [Name]
+    { note: 'E4', duration: 1 },
+    { note: 'D4', duration: 1 },
+    
+    // Happy
+    { note: 'Bb4', duration: 0.5 },
+    { note: 'Bb4', duration: 0.5 },
+    // Birth-
+    { note: 'A4', duration: 1 },
+    // day
+    { note: 'F4', duration: 1 },
+    // to
+    { note: 'G4', duration: 1 },
+    // you
+    { note: 'F4', duration: 2 },
   ];
 
   // Convert note name to frequency
@@ -92,9 +192,11 @@ export function useAudio() {
   const playBirthdaySong = () => {
     if (isPlaying) return;
     
-    // Create a new audio context
+    // Create a new audio context or resume existing one
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    } else {
+      audioContextRef.current.resume();
     }
     
     const currentTime = audioContextRef.current.currentTime;
@@ -122,8 +224,8 @@ export function useAudio() {
 
   const stopBirthdaySong = () => {
     if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
+      // Hanya suspend audioContext, tidak menutupnya
+      audioContextRef.current.suspend();
       setIsPlaying(false);
     }
   };
