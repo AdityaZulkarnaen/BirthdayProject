@@ -1,5 +1,6 @@
-// src/components/CakePage.jsx
-import React, { useState } from 'react';
+// src/components/CakePage.jsx - Modified with navigation button
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import cake from '../assets/cake.svg';
 import { useAudio } from '../hooks/useAudio';
 
@@ -8,12 +9,14 @@ const CakePage = () => {
   const name = "Kika";
   const [candles, setCandles] = useState(0);
   const [showCandles, setShowCandles] = useState(false);
+  const [songPlayedOnce, setSongPlayedOnce] = useState(false);
   const { playBirthdaySong, stopBirthdaySong, isPlaying } = useAudio();
+  const navigate = useNavigate();
   
   const handleCakeClick = () => {
     if (!showCandles) {
       setShowCandles(true);
-      setCandles(1); // Default to 2 candles when first clicked
+      setCandles(1); // Default to 1 candle when first clicked
       
       if (!isPlaying) {
         playBirthdaySong();
@@ -30,6 +33,17 @@ const CakePage = () => {
     } else {
       playBirthdaySong();
     }
+  };
+
+  // Track when song completes playing once
+  useEffect(() => {
+    if (!isPlaying && showCandles) {
+      setSongPlayedOnce(true);
+    }
+  }, [isPlaying, showCandles]);
+
+  const goToGifts = () => {
+    navigate('/gifts');
   };
 
   return (
@@ -76,7 +90,6 @@ const CakePage = () => {
         )}
       </div>
       
-      
       {(showCandles || isPlaying) && (
         <div className="mt-8 flex items-center">
           <button 
@@ -89,6 +102,16 @@ const CakePage = () => {
             <div className={`h-full bg-white rounded-full ${isPlaying ? 'animate-progress' : 'w-0'}`}></div>
           </div>
         </div>
+      )}
+      
+      {/* Show gifts button after song has played once */}
+      {showCandles && (
+        <button 
+          onClick={goToGifts}
+          className="mt-8 px-6 py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 animate-pulse"
+        >
+          Open Your Gifts 🎁
+        </button>
       )}
     </div>
   );
