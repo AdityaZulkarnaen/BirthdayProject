@@ -1,8 +1,9 @@
-// src/components/CakePage.jsx - Modified to use Cake.jsx component
+// src/components/CakePage.jsx - Modified to include confetti on load
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '../hooks/useAudio';
-import Cake from './Cake'; // Import the Cake component
+import Cake from './Cake';
+import confetti from 'canvas-confetti';
 
 const CakePage = () => {
   // Fixed name - Kika
@@ -18,6 +19,46 @@ const CakePage = () => {
   const [elementPositions, setElementPositions] = useState([]);
   // Keep track of used angles to avoid overlap
   const [usedAngles, setUsedAngles] = useState([]);
+  
+  // Add confetti on page load
+  useEffect(() => {
+    // Launch confetti when page loads
+    launchConfetti();
+  }, []);
+
+  // Function to launch confetti
+  const launchConfetti = () => {
+    const duration = 5000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      
+      // Launch confetti from both sides
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+    }, 250);
+  };
   
   // Function to get random number in range
   const getRandomInRange = (min, max) => {
@@ -111,6 +152,8 @@ const CakePage = () => {
 
   const handleBlowCandles = () => {
     setBlowDetected(true);
+    // Re-launch confetti when candles are blown out
+    launchConfetti();
   };
 
   // Track when song completes playing once
@@ -144,7 +187,7 @@ const CakePage = () => {
         className="relative cursor-pointer w-64 h-64" 
         onClick={handleCakeClick}
       >
-        {/* Replace the image with the Cake component */}
+        {/* Use Cake component */}
         <Cake 
           elementPositions={showCandles ? elementPositions : []} 
           blowDetected={blowDetected} 

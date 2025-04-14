@@ -1,20 +1,59 @@
-import React, { useState, useEffect } from 'react';
+// src/components/MainPage.jsx
+import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
-import k1 from '../assets/k1.jpg'; // Replace with your actual image import
-import k2 from '../assets/k2.jpg'; // Replace with your actual image import
-import k3 from '../assets/k3.jpg'; // Replace with your actual image import
-import hbd from '../assets/HBD.png'; // Replace with your actual image import
+import k1 from '../assets/k1.jpg';
+import k2 from '../assets/k2.jpg';
+import k3 from '../assets/k3.jpg';
+import hbd from '../assets/HBD.png';
+import arrow from '../assets/arrow.gif';
+
+// Memoized Spotify embed component to prevent re-rendering
+const SpotifyEmbed = memo(({ src }) => {
+  return (
+    <div className="h-full flex flex-col mb-2">
+      <div 
+        className="w-full h-full" 
+        dangerouslySetInnerHTML={{
+          __html: `<iframe style="border-radius:12px" src="${src}" width="100%" height="auto" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
+        }}
+      />
+    </div>
+  );
+});
+
+// Memoized image slideshow component
+const ImageSlideshow = memo(({ images, currentSlide }) => {
+  return (
+    <div className="relative w-full h-full">
+      {images.map((image, index) => (
+        <div 
+          key={index}
+          className={`absolute w-full h-full transition-opacity duration-500 ${
+            index === currentSlide ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <img 
+            src={image} 
+            alt={`Slide ${index + 1}`} 
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ))}
+    </div>
+  );
+});
 
 const MainPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showModal, setShowModal] = useState(false);
   
-  // These would be your imported images in production
-  // For this example, we'll use placeholder URLs that would be replaced with your actual imports
-  const images = [
-    k3, // This would be your first selfie image
-    k2, // This would be your second selfie image
-    k1, // This would be your third selfie image
+  const images = [k3, k2, k1];
+  
+  // Spotify playlist embed URLs - stored as constants to prevent recreation
+  const spotifyEmbeds = [
+    "https://open.spotify.com/embed/track/4EMTe461jubpxPqFfVA0Rp?utm_source=generator",
+    "https://open.spotify.com/embed/track/25gacl0dFF9HTclx7Ug7xC?utm_source=generator",
+    "https://open.spotify.com/embed/track/5LZ4YMkDx5hY7N9QsH4KTd?utm_source=generator"
   ];
   
   // Auto-rotate images every 5 seconds
@@ -27,45 +66,24 @@ const MainPage = () => {
   }, [images.length]);
   
   const birthdayMessage = `
-    Dear Kika,
+    HBD KIKKKK
     
-    Happy 19th Birthday! 🎂
-    
-    On this special day, I want to celebrate all the joy and happiness you bring to my life. You are an amazing person with a beautiful heart and a bright future ahead.
-    
-    May this year bring you endless opportunities, new adventures, and all the success you deserve. Know that I'm always here for you, cheering you on every step of the way.
-    
-    With love and best wishes,
-    [Your Name]
+    Selamat ulang tahun yang ke 19 yahhh kikaa, strongest girl i ever knew. aku ngerasa belom sempet bilang ini ke kamu, aku cuma pengen nyampein klo aku bangga banget sm kamu apapun hasilnya karena aku tau kalo kamu udah berjuang keras buat ke titik sekarang ini. uda si itu doang keknya wkwkkwk bingung mo nulis apa pls?? intinya im proud of u n' wish u all the best dan semoga kuliahnya lancar aamiin aamiin aamiin
   `;
 
   return (
-    <div className="min-h-screen bg-purple-300 pt-6 pl-8 pb-8 pr-8">
-      <div className='w-full h-auto'>
-        <img className='flex justify-self-center w-xs h-auto'
-          src={hbd} // Replace with your actual image import
-          />
+    <div className="min-h-screen bg-purple-300 pt-0 pl-8 pb-8 pr-8">
+      <div className="w-full h-auto flex items-center justify-center">
+        <div className="flex items-center mr-32">
+          <img className="w-40 h-auto mr-4" src={arrow} alt="Arrow" />
+          <img className="w-xs h-auto ml-36 mr-40" src={hbd} alt="Happy Birthday Banner" />
+        </div>
       </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
           {/* LEFT COLUMN - Photo Slideshow */}
           <div className="w-full md:w-1/3 bg-white rounded-lg shadow-lg overflow-hidden h-96">
-            <div className="relative w-full h-full">
-              {images.map((image, index) => (
-                <div 
-                  key={index}
-                  className={`absolute w-full h-full transition-opacity duration-500 ${
-                    index === currentSlide ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <img 
-                    src={image} 
-                    alt={`Slide ${index + 1}`} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            <ImageSlideshow images={images} currentSlide={currentSlide} />
           </div>
           
           {/* MIDDLE COLUMN - Letter Card */}
@@ -96,33 +114,15 @@ const MainPage = () => {
           
           {/* RIGHT COLUMN - Spotify Playlist */}
           <div className="w-full md:w-1/3 flex flex-col h-96">
-            <div className=" rounded-lg p-6 w-full h-[150px] flex flex-col">
+            <div className="rounded-lg pl-6 pr-6 w-full h-[110px] flex flex-col">
               <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Songs that reminds me of you</h2>
               <div className="flex-grow overflow-hidden">
               </div>
-              <div className="h-full flex flex-col">
-                  <div 
-                    className="w-full h-full" 
-                    dangerouslySetInnerHTML={{
-                      __html: `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/4EMTe461jubpxPqFfVA0Rp?utm_source=generator" width="100%" height="auto" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
-                    }}
-                  />
-              </div>
-              <div className="h-full flex flex-col">
-                  <div 
-                    className="w-full h-full" 
-                    dangerouslySetInnerHTML={{
-                      __html: `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/25gacl0dFF9HTclx7Ug7xC?utm_source=generator" width="100%" height="auto" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
-                    }}
-                  />
-              </div>
-              <div className="h-full flex flex-col">
-                  <div 
-                    className="w-full h-full" 
-                    dangerouslySetInnerHTML={{
-                      __html: `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5LZ4YMkDx5hY7N9QsH4KTd?utm_source=generator" width="100%" height="auto" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
-                    }}
-                  />
+              <div className="spotify-container h-full"> 
+                {/* Use memo components to prevent re-rendering */}
+                {spotifyEmbeds.map((embed, index) => (
+                  <SpotifyEmbed key={index} src={embed} />
+                ))}
               </div>
             </div>
           </div>
