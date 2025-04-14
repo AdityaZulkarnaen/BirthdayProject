@@ -72,7 +72,7 @@ const MainPage = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-purple-300 p-4 sm:pt-0 sm:px-8 sm:pb-8">
+    <div className="min-h-screen bg-purple-300 p-4 sm:pt-0 sm:px-8 sm:pb-8 flex flex-col">
       {/* Header section with arrow and HBD image */}
       <div className="w-full h-auto mb-4 sm:mb-0">
         <div className="flex flex-row items-center justify-center">
@@ -87,11 +87,11 @@ const MainPage = () => {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto flex-grow">
         {/* Main content area with responsive layout */}
         <div className="flex flex-col lg:flex-row md:flex-col xs:flex-row sm:flex-col justify-between space-y-4">
           {/* Photos and Letter - Stacked on mobile, side-by-side on tablet/desktop */}
-          <div className="flex w-full  items-center  justify-items-center justify-center flex-col sm:space-x-6 sm:flex-row lg:w-[100%] md:flex-row md:space-x-6 space-y-4 md:space-y-0">
+          <div className="flex w-full items-center justify-center flex-col sm:space-x-6 sm:flex-row lg:w-[100%] md:flex-row md:space-x-6 space-y-4 md:space-y-0">
             {/* LEFT COLUMN - Photo Slideshow */}
             <div className="w-[80%] h-60 flex justify-self-center lg:w-1/2 sm:w-1/2 bg-white rounded-lg shadow-lg overflow-hidden sm:h-80 lg:h-96">
               <ImageSlideshow className='flex justify-self-center' images={images} currentSlide={currentSlide} />
@@ -126,7 +126,7 @@ const MainPage = () => {
           <div className="w-[80%] mt-2 self-center">
             <div className="rounded-lg px-2 sm:px-4 w-full flex flex-col items-center">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2 text-center">Songs that reminds me of you</h2>
-              <div className="spotify-container w-[230px] flex flex-col items-center  sm:space-y-4"> 
+              <div className="spotify-container w-[230px] flex flex-col items-center sm:space-y-4"> 
                 {/* Use memo components to prevent re-rendering with reduced spacing */}
                 {spotifyEmbeds.map((embed, index) => (
                   <SpotifyEmbed key={index} src={embed} />
@@ -135,16 +135,16 @@ const MainPage = () => {
             </div>
           </div>
         </div>
-        
-        {/* Navigation button to the cake - centered at bottom */}
-        <div className="mt-4 sm:mt-6 flex justify-center">
-          <Link 
-            to="/gifts"
-            className="px-4 py-2 sm:px-6 sm:py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"
-          >
-            Click ME!
-          </Link>
-        </div>
+      </div>
+      
+      {/* Navigation button to the cake - fixed position that's always visible */}
+      <div className="mt-4 sm:mt-6 flex justify-center z-10 relative pb-4">
+        <Link 
+          to="/gifts"
+          className="px-4 py-2 sm:px-6 sm:py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"
+        >
+          Click ME!
+        </Link>
       </div>
       
       {/* Modal */}
