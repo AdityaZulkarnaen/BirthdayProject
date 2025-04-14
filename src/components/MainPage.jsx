@@ -10,7 +10,7 @@ import arrow from '../assets/arrow.gif';
 // Memoized Spotify embed component to prevent re-rendering
 const SpotifyEmbed = memo(({ src }) => {
   return (
-    <div className="h-full flex flex-col mb-2">
+    <div className="lg:h-[110px] w-80 h-20 lg:w-[440px] md:h-full flex flex-col mb-4">
       <div 
         className="w-full h-full" 
         dangerouslySetInnerHTML={{
@@ -72,54 +72,62 @@ const MainPage = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-purple-300 pt-0 pl-8 pb-8 pr-8">
-      <div className="w-full h-auto flex items-center justify-center">
-        <div className="flex items-center mr-32">
-          <img className="w-40 h-auto mr-4" src={arrow} alt="Arrow" />
-          <img className="w-xs h-auto ml-36 mr-40" src={hbd} alt="Happy Birthday Banner" />
+    <div className="min-h-screen bg-purple-300 p-4 sm:pt-0 sm:px-8 sm:pb-8">
+      {/* Header section with arrow and HBD image */}
+      <div className="w-full h-auto mb-4 sm:mb-0">
+        <div className="flex flex-row items-center justify-center">
+          {/* Arrow positioned on the left on mobile */}
+          <div className="flex-none mr-2 sm:mr-4">
+            <img className="w-16 sm:w-24 md:w-40 h-auto" src={arrow} alt="Arrow" />
+          </div>
+          {/* Happy Birthday banner */}
+          <div className="flex-grow flex justify-center">
+            <img className="w-64 sm:w-auto sm:h-20 md:w-72 md:h-auto" src={hbd} alt="Happy Birthday Banner" />
+          </div>
         </div>
       </div>
+      
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
-          {/* LEFT COLUMN - Photo Slideshow */}
-          <div className="w-full md:w-1/3 bg-white rounded-lg shadow-lg overflow-hidden h-96">
-            <ImageSlideshow images={images} currentSlide={currentSlide} />
-          </div>
-          
-          {/* MIDDLE COLUMN - Letter Card */}
-          <div className="w-full md:w-1/3 flex flex-col h-96">
-            <div 
-              className="bg-white rounded-lg p-6 shadow-lg w-full h-full flex flex-col cursor-pointer transform transition hover:scale-105"
-              onClick={() => setShowModal(true)}
-            >
-              <div className="bg-pink-500 text-white font-bold py-1 px-4 rounded-full mb-4 w-fit self-center">
-                README
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Birthday Letter</h2>
-              <div className="flex-grow flex flex-col items-center justify-center">
-                <p className="text-gray-600 mb-6 text-center">Click to read your special birthday message</p>
-                <div className="mt-auto mb-4">
-                  {/* Decorative elements */}
-                  <div className="flex justify-center space-x-6">
-                    <div className="text-3xl">⭐</div>
-                    <div className="text-3xl">🌷</div>
-                    <div className="text-3xl">🍰</div>
+        {/* Main content area with responsive layout */}
+        <div className="flex flex-col lg:flex-row md:flex-col xs:flex-row sm:flex-col justify-between space-y-4">
+          {/* Photos and Letter - Stacked on mobile, side-by-side on tablet/desktop */}
+          <div className="flex w-full  items-center  justify-items-center justify-center flex-col sm:space-x-6 sm:flex-row lg:w-[100%] md:flex-row md:space-x-6 space-y-4 md:space-y-0">
+            {/* LEFT COLUMN - Photo Slideshow */}
+            <div className="w-[80%] h-60 flex justify-self-center lg:w-1/2 sm:w-1/2 bg-white rounded-lg shadow-lg overflow-hidden sm:h-80 lg:h-96">
+              <ImageSlideshow className='flex justify-self-center' images={images} currentSlide={currentSlide} />
+            </div>
+            
+            {/* MIDDLE COLUMN - Letter Card */}
+            <div className="w-[80%] lg:w-1/2 md:w-1/3 sm:w-1/2 flex flex-col h-64 sm:h-80 lg:h-96">
+              <div 
+                className="bg-white rounded-lg p-4 sm:p-6 shadow-lg w-full h-full flex flex-col cursor-pointer transform transition hover:scale-105"
+                onClick={() => setShowModal(true)}
+              >
+                <div className="bg-pink-500 text-white font-bold py-1 px-3 sm:px-4 rounded-full mb-2 sm:mb-4 w-fit self-center text-sm sm:text-base">
+                  README
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">Birthday Letter</h2>
+                <div className="flex-grow flex flex-col items-center justify-center">
+                  <p className="text-gray-600 mb-4 sm:mb-6 text-center text-sm sm:text-base">Click to read your special birthday message</p>
+                  <div className="mt-auto mb-2 sm:mb-4">
+                    {/* Decorative elements */}
+                    <div className="flex justify-center space-x-4 sm:space-x-6">
+                      <div className="text-2xl sm:text-3xl">⭐</div>
+                      <div className="text-2xl sm:text-3xl">🌷</div>
+                      <div className="text-2xl sm:text-3xl">🍰</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center justify-center">
               </div>
             </div>
           </div>
           
-          {/* RIGHT COLUMN - Spotify Playlist */}
-          <div className="w-full md:w-1/3 flex flex-col h-96">
-            <div className="rounded-lg pl-6 pr-6 w-full h-[110px] flex flex-col">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Songs that reminds me of you</h2>
-              <div className="flex-grow overflow-hidden">
-              </div>
-              <div className="spotify-container h-full"> 
-                {/* Use memo components to prevent re-rendering */}
+          {/* SPOTIFY SECTION - Always below in both mobile and tablet */}
+          <div className="w-[80%] mt-2 self-center">
+            <div className="rounded-lg px-2 sm:px-4 w-full flex flex-col items-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2 text-center">Songs that reminds me of you</h2>
+              <div className="spotify-container w-[230px] flex flex-col items-center  sm:space-y-4"> 
+                {/* Use memo components to prevent re-rendering with reduced spacing */}
                 {spotifyEmbeds.map((embed, index) => (
                   <SpotifyEmbed key={index} src={embed} />
                 ))}
@@ -129,10 +137,10 @@ const MainPage = () => {
         </div>
         
         {/* Navigation button to the cake - centered at bottom */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-4 sm:mt-6 flex justify-center">
           <Link 
             to="/gifts"
-            className="px-6 py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300"
+            className="px-4 py-2 sm:px-6 sm:py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"
           >
             Click ME!
           </Link>
@@ -142,9 +150,9 @@ const MainPage = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">My Birthday Message</h2>
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-sm sm:max-w-md md:max-w-lg w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-2 sm:mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">My Birthday Message</h2>
               <button 
                 onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -152,13 +160,13 @@ const MainPage = () => {
                 ✕
               </button>
             </div>
-            <div className="whitespace-pre-line text-gray-700">
+            <div className="whitespace-pre-line text-gray-700 text-sm sm:text-base">
               {birthdayMessage}
             </div>
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 sm:mt-6 flex justify-end">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition duration-300"
+                className="px-3 py-1 sm:px-4 sm:py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"
               >
                 Close
               </button>

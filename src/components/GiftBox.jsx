@@ -11,8 +11,8 @@ const GiftBox = ({ onClick }) => {
       <img 
         src={gift}
         alt="Gift Box" 
-        className="w-64 h-64 rounded-lg"/>
-      <div className="mt-4 text-xl font-semibold text-center">Click to Open</div>
+        className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-lg"/>
+      <div className="mt-2 sm:mt-4 text-lg sm:text-xl font-semibold text-center">Click to Open</div>
     </div>
   );
 };

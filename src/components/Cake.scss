@@ -15,20 +15,21 @@ $chocolate: #553c13;
 
 .cake {
   position: absolute;
-  width: 250px;
-  height: 200px;
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  aspect-ratio: 250/200;
   top: 50%;
   left: 50%;
-  margin-top: -70px;
-  margin-left: -125px;
+  transform: translate(-50%, -50%);
 }
 
 .plate {
-  width: 270px;
-  height: 110px;
+  width: 108%;
+  height: 55%;
   position: absolute;
-  bottom: -10px;
-  left: -10px;
+  bottom: -5%;
+  left: -4%;
   background-color: #f6a5eb;
   border-radius: 50%;
   box-shadow: 0 2px 0 darken(#ce97fb, 10%), 0 4px 0 darken(#ccc, 10%),
@@ -42,36 +43,36 @@ $chocolate: #553c13;
 .layer {
   position: absolute;
   display: block;
-  width: 250px;
-  height: 100px;
+  width: 100%;
+  height: 50%;
   border-radius: 50%;
   @include foodColoring($chocolate);
 }
 
 .layer-top {
-  top: 0px;
+  top: 0%;
 }
 .layer-middle {
-  top: 33px;
+  top: 16.5%;
 }
 .layer-bottom {
-  top: 66px;
+  top: 33%;
 }
 
 .icing {
-  top: -1px;
-  left: -1px;
+  top: -0.5%;
+  left: -0.4%;
   background-color: #f0e4d0;
-  width: 252px;
-  height: 103px;
+  width: 100.8%;
+  height: 51.5%;
   border-radius: 50%;
   &:before {
     content: "";
     position: absolute;
-    top: 4px;
-    right: 5px;
-    bottom: 6px;
-    left: 5px;
+    top: 4%;
+    right: 2%;
+    bottom: 6%;
+    left: 2%;
     background-color: lighten($vanilla, 3%);
     box-shadow: 0 0 4px lighten($vanilla, 5%), 0 0 4px lighten($vanilla, 5%),
       0 0 4px lighten($vanilla, 5%);
@@ -82,31 +83,39 @@ $chocolate: #553c13;
 
 .drip {
   display: block;
-  width: 50px;
-  height: 60px;
+  width: 20%;
+  height: 30%;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   background-color: $vanilla;
 }
 
 .drip1 {
-  top: 53px;
-  left: 5px;
+  top: 26.5%;
+  left: 2%;
   transform: skewY(15deg);
-  height: 48px;
-  width: 40px;
+  height: 24%;
+  width: 16%;
 }
 
 .drip2 {
-  top: 69px;
-  left: 181px;
+  top: 34.5%;
+  left: 72.4%;
   transform: skewY(-15deg);
 }
 
 .drip3 {
-  top: 54px;
-  left: 90px;
-  width: 80px;
+  top: 27%;
+  left: 36%;
+  width: 32%;
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
+}
+
+/* Media queries */
+@media (max-width: 640px) {
+  .cake {
+    width: 80%;
+    max-width: 200px;
+  }
 }

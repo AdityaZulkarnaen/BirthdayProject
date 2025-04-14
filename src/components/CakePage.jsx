@@ -1,5 +1,5 @@
-// src/components/CakePage.jsx - Modified to include confetti on load
-import React, { useState, useEffect } from 'react';
+// src/components/CakePage.jsx
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '../hooks/useAudio';
 import Cake from './Cake';
@@ -15,10 +15,11 @@ const CakePage = () => {
   const { playBirthdaySong, stopBirthdaySong, isPlaying } = useAudio();
   const navigate = useNavigate();
   
+  // Reference to the cake container for dynamic sizing
+  const cakeContainerRef = useRef(null);
+  
   // Calculate positions for candles
   const [elementPositions, setElementPositions] = useState([]);
-  // Keep track of used angles to avoid overlap
-  const [usedAngles, setUsedAngles] = useState([]);
   
   // Add confetti on page load
   useEffect(() => {
@@ -65,63 +66,128 @@ const CakePage = () => {
     return Math.random() * (max - min) + min;
   };
 
-  // Function to randomly select from specific y values
+  // Function to randomly select from specific y values - adjusted for better vertical positioning
   const getRandomYPosition = () => {
-    const yOptions = [5, 2, -1];
+    const yOptions = [2, 0, -2]; // Adjusted to keep candles more on top of the cake
     const randomIndex = Math.floor(Math.random() * yOptions.length);
     return yOptions[randomIndex];
   };
 
-  // Function to generate a position for a new candle with unique angle
-  const generateCandlePosition = () => {
-    // Cake dimensions - now matched to CSS cake dimensions
-    const cakeWidth = 250; // width from Cake.scss
+  // Function to get the actual cake size
+  const getCakeSize = () => {
+    if (cakeContainerRef.current) {
+      return cakeContainerRef.current.offsetWidth;
+    }
+    // Fallback to estimated size based on screen width
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 640) { // sm breakpoint
+      return 208; // w-52
+    } else if (screenWidth < 768) { // md breakpoint
+      return 256; // w-64
+    } else {
+      return 288; // w-72
+    }
+  };
+
+  // Function to generate a position for a new candle
+  const generateNewCandlePosition = (existingPositions) => {
+    // Get actual cake size
+    const cakeWidth = getCakeSize();
     
     // Define the region for candle placement on the cake frosting
     const centerX = cakeWidth / 2;
-    const baseRadius = 70; // Base radius for positioning on the CSS cake
     
-    // Define possible angle sectors (10 sectors around the cake top)
-    const possibleSectors = Array.from({ length: 10 }, (_, i) => i * 36 - 90); // 10 sectors of 36 degrees each
+    // Make base radius responsive to cake size
+    const baseRadius = cakeWidth * 0.25;
     
-    // Filter out already used sectors
-    const availableSectors = possibleSectors.filter(sector => !usedAngles.includes(sector));
+    // Calculate how many candles we already have
+    const candleCount = existingPositions.length;
     
-    // If all sectors are used, reset (this shouldn't happen with max 10 candles)
-    const selectedSector = availableSectors.length > 0 
-      ? availableSectors[Math.floor(Math.random() * availableSectors.length)]
-      : possibleSectors[Math.floor(Math.random() * possibleSectors.length)];
+    // Calculate a good position for the new candle based on existing candles
+    // Use angle distribution to ensure even spacing around the cake
+    const startAngle = -135;
+    const angleSpan = 270;
     
-    // Update used angles
-    setUsedAngles(prev => [...prev, selectedSector]);
-    
-    // Add some randomness to the angle (±10 degrees)
+    // For the new candle, calculate its position based on its index
+    const baseAngle = startAngle + (candleCount * (angleSpan / Math.max(9, 1))); // Max 10 candles (0-9 indices)
     const randomAngleOffset = getRandomInRange(-10, 10);
-    const angle = selectedSector + randomAngleOffset;
+    const angle = baseAngle + randomAngleOffset;
     const radian = angle * Math.PI / 180;
     
-    // Add some randomness to the radius (±10px)
-    const randomRadiusOffset = getRandomInRange(-10, 10);
-    const radius = baseRadius + randomRadiusOffset;
+    // Vary radius slightly for natural look
+    const radiusVariation = getRandomInRange(-5, 5);
+    const radius = baseRadius + radiusVariation;
     
-    // Calculate position with randomized components
-    const x = centerX + radius * Math.cos(radian);
-    const y = getRandomYPosition(); // Random y position from options: 5, 2, -1
+    // Calculate position
+    const x = centerX -20 + radius * Math.cos(radian);
     
-    return { x, y };
+    // For mobile view, shift candles slightly toward center
+    let adjustedX = x;
+    if (cakeWidth < 220) { // For very small screens
+      const centerCorrection = (x - centerX) * 0.2; // Pull 20% toward center
+      adjustedX = x -10 - centerCorrection;
+    }
+    
+    const y = getRandomYPosition();
+    
+    return { x: adjustedX, y };
   };
   
-  useEffect(() => {
-    // Only generate positions for new candles
-    if (showCandles && elementPositions.length < candles) {
-      const newPositions = [...elementPositions];
+  // Function to recalculate all positions (only used for window resize)
+  const recalculateAllPositions = () => {
+    if (showCandles && candles > 0) {
+      // Create new array for regenerated positions
+      const newPositions = [];
       
-      // Add positions only for the new candles
-      for (let i = elementPositions.length; i < candles; i++) {
-        newPositions.push(generateCandlePosition());
+      // Use the same algorithm, but generate for all candles at once
+      const cakeWidth = getCakeSize();
+      const centerX = cakeWidth / 2;
+      const baseRadius = cakeWidth * 0.25;
+      const startAngle = -135;
+      const angleSpan = 270;
+      
+      for (let i = 0; i < candles; i++) {
+        const baseAngle = startAngle + (i * (angleSpan / Math.max(candles - 1, 1)));
+        const randomAngleOffset = getRandomInRange(-10, 10);
+        const angle = baseAngle + randomAngleOffset;
+        const radian = angle * Math.PI / 180;
+        
+        const radiusVariation = getRandomInRange(-5, 5);
+        const radius = baseRadius + radiusVariation;
+        
+        const x = centerX + radius * Math.cos(radian);
+        
+        let adjustedX = x;
+        if (cakeWidth < 220) {
+          const centerCorrection = (x - centerX) * 0.2;
+          adjustedX = x - centerCorrection;
+        }
+        
+        const y = getRandomYPosition();
+        
+        newPositions.push({ x: adjustedX, y });
       }
       
       setElementPositions(newPositions);
+    }
+  };
+
+  // Add resize listener to recalculate positions when window size changes
+  useEffect(() => {
+    const handleResize = () => {
+      recalculateAllPositions();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [showCandles, candles]);
+  
+  // Effect to add new candle when candles count increases
+  useEffect(() => {
+    if (showCandles && elementPositions.length < candles) {
+      // Only generate position for the newest candle
+      const newPosition = generateNewCandlePosition(elementPositions);
+      setElementPositions(prev => [...prev, newPosition]);
     }
   }, [candles, showCandles]);
 
@@ -130,7 +196,6 @@ const CakePage = () => {
       setShowCandles(true);
       setCandles(1); // Start with 1 candle
       setBlowDetected(false);
-      setUsedAngles([]); // Reset used angles when starting fresh
       
       if (!isPlaying) {
         playBirthdaySong();
@@ -163,28 +228,25 @@ const CakePage = () => {
     }
   }, [isPlaying, showCandles]);
 
-  const goToGifts = () => {
-    navigate('/gifts');
-  };
-
   const goToMain = () => {
     navigate('/main');
   };
 
   return (
-    <div className="min-h-screen bg-purple-300 flex flex-col items-center justify-center text-white">
-      <div className="text-4xl w-10/12 font-bold mb-8 text-center">
+    <div className="min-h-screen bg-purple-300 flex flex-col items-center justify-center text-white px-4 py-8">
+      <div className="text-2xl sm:text-3xl md:text-4xl w-full sm:w-10/12 font-bold mb-4 sm:mb-8 text-center">
         Happy 19th Birthday {name}!
       </div>
       
-      <div className="mb-8">
-        <div className="px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600">
+      <div className="mb-4 sm:mb-8">
+        <div className="px-3 py-1 sm:px-4 sm:py-2 rounded-md bg-gray-700 text-white border border-gray-600 text-sm sm:text-base">
           Number of candles on cake: {candles}
         </div>
       </div>
       
       <div 
-        className="relative cursor-pointer w-64 h-64" 
+        ref={cakeContainerRef}
+        className="relative cursor-pointer w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72" 
         onClick={handleCakeClick}
       >
         {/* Use Cake component */}
@@ -197,21 +259,21 @@ const CakePage = () => {
       {showCandles && !blowDetected && (
         <button 
           onClick={handleBlowCandles}
-          className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+          className="mt-4 sm:mt-6 px-3 py-1 sm:px-4 sm:py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 text-sm sm:text-base"
         >
           Blow Candles
         </button>
       )}
       
       {(showCandles || isPlaying) && (
-        <div className="mt-8 flex items-center">
+        <div className="mt-4 sm:mt-8 flex items-center">
           <button 
             onClick={handlePlayPause}
-            className="bg-gray-700 p-2 rounded-full mr-2"
+            className="bg-gray-700 p-1 sm:p-2 rounded-full mr-2"
           >
             {isPlaying ? "❚❚" : "▶"}
           </button>
-          <div className="w-48 h-1 bg-gray-700 rounded-full">
+          <div className="w-32 sm:w-48 h-1 bg-gray-700 rounded-full">
             <div className={`h-full bg-white rounded-full ${isPlaying ? 'animate-progress' : 'w-0'}`}></div>
           </div>
         </div>
@@ -220,7 +282,7 @@ const CakePage = () => {
       {(showCandles && (blowDetected || songPlayedOnce)) && (
         <button 
           onClick={goToMain}
-          className="mt-8 px-6 py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 animate-pulse"
+          className="mt-6 sm:mt-8 px-4 py-2 sm:px-6 sm:py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 animate-pulse text-sm sm:text-base"
         >
           Next
         </button>
