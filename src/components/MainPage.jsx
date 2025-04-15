@@ -89,18 +89,18 @@ const MainPage = () => {
       
       {/* Added a wrapper div with overflow-hidden to prevent content from overlapping */}
       <div className="max-w-6xl lg:max-w-7xl mx-auto w-full overflow-hidden">
-        {/* Main content area with responsive layout */}
-        <div className="flex flex-col lg:flex-row lg:gap-4 xl:gap-6">
-          {/* PHOTO SLIDESHOW - Modified to maintain aspect ratio */}
-          <div className="w-full lg:w-1/3 mb-4 lg:mb-0">
+        {/* Main content area with responsive layout - Modified for tablet view */}
+        <div className="flex flex-col sm:flex-row sm:flex-wrap lg:flex-row lg:flex-nowrap lg:gap-4 xl:gap-6">
+          {/* PHOTO SLIDESHOW - Modified for tablet view (50% width) */}
+          <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:pr-2 lg:pr-0 lg:mb-0">
             {/* Use aspect-square class to maintain 1:1 aspect ratio */}
             <div className="aspect-square bg-white rounded-lg shadow-lg overflow-hidden">
               <ImageSlideshow images={images} currentSlide={currentSlide} />
             </div>
           </div>
           
-          {/* BIRTHDAY LETTER CARD - Modified to match photo container */}
-          <div className="w-full lg:w-1/3 mb-4 lg:mb-0">
+          {/* BIRTHDAY LETTER CARD - Modified for tablet view (50% width) */}
+          <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:pl-2 lg:pl-0 lg:mb-0">
             <div 
               className="bg-white rounded-lg p-4 sm:p-6 shadow-lg w-full aspect-square flex flex-col cursor-pointer transform transition hover:scale-105"
               onClick={() => setShowModal(true)}
@@ -123,8 +123,8 @@ const MainPage = () => {
             </div>
           </div>
           
-          {/* SPOTIFY SECTION - Modified to have a fixed height that won't overlap the button */}
-          <div className="w-full lg:w-1/3">
+          {/* SPOTIFY SECTION - Modified to be below other sections on tablet */}
+          <div className="w-full md:w-full lg:w-1/3 md:mt-4 lg:mt-0">
             <div className="aspect-square px-2 py-3 sm:px-4 sm:py-4 w-full lg:p-0 lg:pl-4 flex flex-col">
               <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 text-center">Songs that reminds me of you</h2>
               <div className="w-full mx-auto flex-grow flex flex-col justify-between"> 
