@@ -13,7 +13,7 @@ const Vouchers = () => {
     },
     {
       id: "002",
-      title: "TIMEZONE/FUNWORLD",
+      title: "TIMEZONE / FUNWORLD",
       color: "bg-teal-500",
       validUntil: "APRIL 2026"
     },
@@ -31,7 +31,7 @@ const Vouchers = () => {
     },
     {
       id: "005",
-      title: "SURALOKA ZOO",
+      title: "MAKAN SUSHI ENAK",
       color: "bg-yellow-500",
       validUntil: "APRIL 2026"
     },
@@ -49,8 +49,8 @@ const Vouchers = () => {
   
   return (
     <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl px-2">
-      <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-center">Your Birth Day Coupons</h2>
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">Choose one please</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-0 sm:mb-2 text-center">Your Birth Day Coupons</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">pilih satu yahh</h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {vouchers.map((voucher) => (
