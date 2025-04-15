@@ -10,7 +10,7 @@ import arrow from '../assets/arrow.gif';
 // Memoized Spotify embed component to prevent re-rendering
 const SpotifyEmbed = memo(({ src }) => {
   return (
-    <div className="lg:h-[110px] w-80 h-20 lg:w-[440px] md:h-full flex flex-col mb-4">
+    <div className="w-full h-16 sm:h-18 md:h-20 lg:h-18 xl:h-20 mb-2">
       <div 
         className="w-full h-full" 
         dangerouslySetInnerHTML={{
@@ -35,7 +35,7 @@ const ImageSlideshow = memo(({ images, currentSlide }) => {
           <img 
             src={image} 
             alt={`Slide ${index + 1}`} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-lg"
           />
         </div>
       ))}
@@ -72,62 +72,62 @@ const MainPage = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-purple-300 p-4 sm:pt-0 sm:px-8 sm:pb-8 flex flex-col">
+    <div className="min-h-screen bg-purple-300 p-4 flex flex-col">
       {/* Header section with arrow and HBD image */}
-      <div className="w-full h-auto mb-4 sm:mb-0">
-        <div className="flex flex-row items-center justify-center">
-          {/* Arrow positioned on the left on mobile */}
-          <div className="flex-none mr-2 sm:mr-4">
-            <img className="w-16 sm:w-24 md:w-40 h-auto" src={arrow} alt="Arrow" />
+      <div className="w-full h-56 mb-4 items-end align-bottom self-end">
+        <div className="flex items-center justify-center h-full">
+          {/* Arrow positioned on the left */}
+          <div className="mr-2 sm:w-32 md:mr-4 lg:mr-10 w-32 lg:w-52">
+            <img className="w-full sm:w-full md:w-20 lg:w-full h-auto" src={arrow} alt="Arrow" />
           </div>
           {/* Happy Birthday banner */}
-          <div className="flex-grow flex justify-center">
-            <img className="w-64 sm:w-auto sm:h-20 md:w-72 md:h-auto" src={hbd} alt="Happy Birthday Banner" />
+          <div className="flex justify-center w-64 sm:w-64 lg:w-80 lg:mr-52">
+            <img className="h-full sm:h-full md:h-20 lg:h-full w-auto" src={hbd} alt="Happy Birthday Banner" />
           </div>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto flex-grow">
+      {/* Added a wrapper div with overflow-hidden to prevent content from overlapping */}
+      <div className="max-w-6xl lg:max-w-7xl mx-auto w-full overflow-hidden">
         {/* Main content area with responsive layout */}
-        <div className="flex flex-col lg:flex-row md:flex-col xs:flex-row sm:flex-col justify-between space-y-4">
-          {/* Photos and Letter - Stacked on mobile, side-by-side on tablet/desktop */}
-          <div className="flex w-full items-center justify-center flex-col sm:space-x-6 sm:flex-row lg:w-[100%] md:flex-row md:space-x-6 space-y-4 md:space-y-0">
-            {/* LEFT COLUMN - Photo Slideshow */}
-            <div className="w-[80%] h-60 flex justify-self-center lg:w-1/2 sm:w-1/2 bg-white rounded-lg shadow-lg overflow-hidden sm:h-80 lg:h-96">
-              <ImageSlideshow className='flex justify-self-center' images={images} currentSlide={currentSlide} />
+        <div className="flex flex-col lg:flex-row lg:gap-4 xl:gap-6">
+          {/* PHOTO SLIDESHOW - Modified to maintain aspect ratio */}
+          <div className="w-full lg:w-1/3 mb-4 lg:mb-0">
+            {/* Use aspect-square class to maintain 1:1 aspect ratio */}
+            <div className="aspect-square bg-white rounded-lg shadow-lg overflow-hidden">
+              <ImageSlideshow images={images} currentSlide={currentSlide} />
             </div>
-            
-            {/* MIDDLE COLUMN - Letter Card */}
-            <div className="w-[80%] lg:w-1/2 md:w-1/3 sm:w-1/2 flex flex-col h-64 sm:h-80 lg:h-96">
-              <div 
-                className="bg-white rounded-lg p-4 sm:p-6 shadow-lg w-full h-full flex flex-col cursor-pointer transform transition hover:scale-105"
-                onClick={() => setShowModal(true)}
-              >
-                <div className="bg-pink-500 text-white font-bold py-1 px-3 sm:px-4 rounded-full mb-2 sm:mb-4 w-fit self-center text-sm sm:text-base">
-                  README
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">Birthday Letter</h2>
-                <div className="flex-grow flex flex-col items-center justify-center">
-                  <p className="text-gray-600 mb-4 sm:mb-6 text-center text-sm sm:text-base">Click to read your special birthday message</p>
-                  <div className="mt-auto mb-2 sm:mb-4">
-                    {/* Decorative elements */}
-                    <div className="flex justify-center space-x-4 sm:space-x-6">
-                      <div className="text-2xl sm:text-3xl">⭐</div>
-                      <div className="text-2xl sm:text-3xl">🌷</div>
-                      <div className="text-2xl sm:text-3xl">🍰</div>
-                    </div>
+          </div>
+          
+          {/* BIRTHDAY LETTER CARD - Modified to match photo container */}
+          <div className="w-full lg:w-1/3 mb-4 lg:mb-0">
+            <div 
+              className="bg-white rounded-lg p-4 sm:p-6 shadow-lg w-full aspect-square flex flex-col cursor-pointer transform transition hover:scale-105"
+              onClick={() => setShowModal(true)}
+            >
+              <div className="bg-pink-500 text-white font-bold py-1 px-3 rounded-full mb-2 sm:mb-4 w-fit self-center text-sm sm:text-base">
+                README
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">Birthday Letter</h2>
+              <div className="flex-grow flex flex-col items-center justify-center">
+                <p className="text-gray-600 mb-4 text-center text-sm sm:text-base">Click to read your special birthday message</p>
+                <div className="mt-auto mb-2 sm:mb-4">
+                  {/* Decorative elements */}
+                  <div className="flex justify-center space-x-4 sm:space-x-6">
+                    <div className="text-2xl sm:text-3xl">⭐</div>
+                    <div className="text-2xl sm:text-3xl">🌷</div>
+                    <div className="text-2xl sm:text-3xl">🍰</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* SPOTIFY SECTION - Always below in both mobile and tablet */}
-          <div className="w-[80%] mt-2 self-center">
-            <div className="rounded-lg px-2 sm:px-4 w-full flex flex-col items-center">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2 text-center">Songs that reminds me of you</h2>
-              <div className="spotify-container w-[230px] flex flex-col items-center sm:space-y-4"> 
-                {/* Use memo components to prevent re-rendering with reduced spacing */}
+          {/* SPOTIFY SECTION - Modified to have a fixed height that won't overlap the button */}
+          <div className="w-full lg:w-1/3">
+            <div className="aspect-square px-2 py-3 sm:px-4 sm:py-4 w-full lg:p-0 lg:pl-4 flex flex-col">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 text-center">Songs that reminds me of you</h2>
+              <div className="w-full mx-auto flex-grow flex flex-col justify-between"> 
                 {spotifyEmbeds.map((embed, index) => (
                   <SpotifyEmbed key={index} src={embed} />
                 ))}
@@ -137,8 +137,8 @@ const MainPage = () => {
         </div>
       </div>
       
-      {/* Navigation button to the cake - fixed position that's always visible */}
-      <div className="mt-4 sm:mt-6 flex justify-center z-10 relative pb-4">
+      {/* Navigation button to the cake - Added proper spacing and z-index */}
+      <div className="mt-16 sm:mt-20 md:mt-24 lg:mt-8 flex justify-center pb-4 relative z-10">
         <Link 
           to="/gifts"
           className="px-4 py-2 sm:px-6 sm:py-3 bg-pink-500 text-white rounded-lg shadow-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"
@@ -151,7 +151,7 @@ const MainPage = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-4 sm:p-6 max-w-sm sm:max-w-md md:max-w-lg w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-2 sm:mb-4">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800">My Birthday Message</h2>
               <button 
                 onClick={() => setShowModal(false)}
@@ -163,7 +163,7 @@ const MainPage = () => {
             <div className="whitespace-pre-line text-gray-700 text-sm sm:text-base">
               {birthdayMessage}
             </div>
-            <div className="mt-4 sm:mt-6 flex justify-end">
+            <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowModal(false)}
                 className="px-3 py-1 sm:px-4 sm:py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition duration-300 text-sm sm:text-base"

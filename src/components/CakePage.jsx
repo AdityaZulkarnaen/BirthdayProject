@@ -12,7 +12,7 @@ const CakePage = () => {
   const [showCandles, setShowCandles] = useState(false);
   const [songPlayedOnce, setSongPlayedOnce] = useState(false);
   const [blowDetected, setBlowDetected] = useState(false);
-  const { playBirthdaySong, stopBirthdaySong, isPlaying } = useAudio();
+  const { playBirthdaySong, stopBirthdaySong, isPlaying, audioInitialized } = useAudio();
   const navigate = useNavigate();
   
   // Reference to the cake container for dynamic sizing
@@ -197,9 +197,8 @@ const CakePage = () => {
       setCandles(1); // Start with 1 candle
       setBlowDetected(false);
       
-      if (!isPlaying) {
-        playBirthdaySong();
-      }
+      // Always try to play the song on click - this helps with iOS audio restrictions
+      playBirthdaySong();
     } else {
       // Add one more candle on each subsequent click, up to 10
       setCandles(prev => Math.min(prev + 1, 10));
@@ -277,6 +276,16 @@ const CakePage = () => {
             <div className={`h-full bg-white rounded-full ${isPlaying ? 'animate-progress' : 'w-0'}`}></div>
           </div>
         </div>
+      )}
+      
+      {/* iOS audio helper button - visible only if audio isn't initialized yet */}
+      {!audioInitialized && (
+        <button 
+          onClick={playBirthdaySong}
+          className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition duration-300"
+        >
+          Tap to Enable Music
+        </button>
       )}
       
       {(showCandles && (blowDetected || songPlayedOnce)) && (
