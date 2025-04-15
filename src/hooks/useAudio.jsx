@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 
 export function useAudio() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioInitialized, setAudioInitialized] = useState(false);
   const audioContextRef = useRef(null);
   const oscillatorRef = useRef(null);
   const gainNodeRef = useRef(null);
@@ -161,46 +160,6 @@ export function useAudio() {
     { note: 'F4', duration: 2 },
   ];
 
-  // Initialize audio context on mount - but don't start it yet
-  useEffect(() => {
-    // Define unlockAudio function first so we can reference it in cleanup
-    const unlockAudio = () => {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioContextRef.current = new AudioContext();
-      
-      // iOS requires the context to be resumed inside a user gesture
-      if (audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume();
-      }
-      
-      setAudioInitialized(true);
-      
-      // Remove event listeners once audio is initialized
-      document.removeEventListener('touchstart', unlockAudio);
-      document.removeEventListener('touchend', unlockAudio);
-      document.removeEventListener('click', unlockAudio);
-    };
-  
-    // Create the context but don't start anything
-    if (!audioContextRef.current) {
-      // Add event listeners to unlock audio on user interaction
-      document.addEventListener('touchstart', unlockAudio);
-      document.addEventListener('touchend', unlockAudio);
-      document.addEventListener('click', unlockAudio);
-    }
-    
-    // Cleanup on component unmount
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-        audioContextRef.current = null;
-      }
-      document.removeEventListener('touchstart', unlockAudio);
-      document.removeEventListener('touchend', unlockAudio);
-      document.removeEventListener('click', unlockAudio);
-    };
-  }, []);
-
   // Convert note name to frequency
   const noteToFrequency = (note) => {
     const notes = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11, Bb: 10 };
@@ -233,27 +192,13 @@ export function useAudio() {
   const playBirthdaySong = () => {
     if (isPlaying) return;
     
-    // Make sure audio context is available and resumed
+    // Create a new audio context or resume existing one
     if (!audioContextRef.current) {
-      // Create it if it doesn't exist
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioContextRef.current = new AudioContext();
-      setAudioInitialized(true);
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    } else {
+      audioContextRef.current.resume();
     }
     
-    // iOS Safari requires the context to be resumed on a user action
-    if (audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume().then(() => {
-        // Continue with playing the song after resuming
-        playSongWithActiveContext();
-      });
-    } else {
-      // Context is already running, just play the song
-      playSongWithActiveContext();
-    }
-  };
-  
-  const playSongWithActiveContext = () => {
     const currentTime = audioContextRef.current.currentTime;
     let time = currentTime + 0.1; // Small delay to start
     
@@ -261,14 +206,14 @@ export function useAudio() {
     const tempoFactor = 0.3; // Adjusted to be slower
     
     notes.forEach(({ note, duration }) => {
-      const frequency = noteToFrequency(note);
-      const noteDuration = duration * 0.5; // Adjust tempo
+        const frequency = noteToFrequency(note);
+        const noteDuration = duration * 0.5; // Adjust tempo
+        
+        playNote(frequency, noteDuration, time);
+        time += noteDuration;
+      });
       
-      playNote(frequency, noteDuration, time);
-      time += noteDuration;
-    });
-    
-    setIsPlaying(true);
+      setIsPlaying(true);
     
     // Reset playing state after song is complete
     const totalDuration = notes.reduce((acc, { duration }) => acc + duration / tempoFactor, 0);
@@ -279,11 +224,11 @@ export function useAudio() {
 
   const stopBirthdaySong = () => {
     if (audioContextRef.current) {
-      // Just suspend audioContext, don't close it
+      // Hanya suspend audioContext, tidak menutupnya
       audioContextRef.current.suspend();
       setIsPlaying(false);
     }
   };
 
-  return { playBirthdaySong, stopBirthdaySong, isPlaying, audioInitialized };
+  return { playBirthdaySong, stopBirthdaySong, isPlaying };
 }
